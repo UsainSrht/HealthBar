@@ -1,0 +1,20 @@
+bar:
+  #Placeholders:
+  #{entity} = entity's translated name
+  #{name} = entity's name
+  # {name} will show {entity} if the entity doesn't have name.
+  #{health} = entity's health
+  #{max} = entity's max health
+  #{damage} = given damage
+  title:
+    living: "<gray>{health}/{max} <reset>{entity} -{damage}<red>♥"
+    dead: "<gray>{health}/{max} <dark_gray>☠ {entity} ☠ <reset>-{damage}<red>♥"
+  #https://jd.adventure.kyori.net/api/4.11.0/net/kyori/adventure/bossbar/BossBar.Overlay.html
+  overlay: PROGRESS
+  #https://jd.adventure.kyori.net/api/4.11.0/net/kyori/adventure/bossbar/BossBar.Color.html
+  color: RED
+
+blacklist:
+  - ENDER_DRAGON
+  - WITHER
+  - PLAYER

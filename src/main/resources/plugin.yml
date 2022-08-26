@@ -1,0 +1,7 @@
+name: Healthbar
+version: '${project.version}'
+main: com.purpurmc.healthbar.Healthbar
+api-version: 1.19
+prefix: HealthBar
+authors: [ UsainSrht ]
+description: Simple mob health bar plugin.
