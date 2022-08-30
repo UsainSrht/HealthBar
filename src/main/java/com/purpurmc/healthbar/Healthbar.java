@@ -14,14 +14,17 @@ import java.util.List;
 public final class Healthbar extends JavaPlugin {
 
     public static Healthbar instance;
+    public String livingtitle;
+    public String deadtitle;
     public BossBar.Overlay baroverlay;
-    private BossBar.Color barcolor;
-    private Collection<EntityType> blacklist;
+    public BossBar.Color barcolor;
+    public Collection<EntityType> blacklist;
 
     @Override
     public void onEnable() {
         instance = this;
         getServer().getPluginManager().registerEvents(new DamageEvent(), this);
+        this.getCommand("healthbar").setExecutor(new HealthBarCommand());
         try {
             initializeYAML();
         } catch (IOException e) {
@@ -47,11 +50,18 @@ public final class Healthbar extends JavaPlugin {
         return this.barcolor;
     }
 
+    public String getLivingtitle() {return this.livingtitle;}
+    public String getDeadtitle() {return this.deadtitle;}
+
     public void initializeYAML() throws IOException {
         File config = new File("plugins/HealthBar/config.yml");
         if (config.exists()) {
             getLogger().info("Loading congif.yml");
             YamlConfiguration configyml = YamlConfiguration.loadConfiguration(config);
+
+            this.livingtitle = configyml.getString("bar.title.living");
+
+            this.deadtitle = configyml.getString("bar.title.dead");
 
             String overlay = configyml.getString("bar.overlay");
             this.baroverlay = BossBar.Overlay.valueOf(overlay);
@@ -61,9 +71,7 @@ public final class Healthbar extends JavaPlugin {
 
             List<String> blacklist = configyml.getStringList("blacklist");
             Collection<EntityType> blacklistentitytpye = new ArrayList<>();
-            blacklist.forEach(str -> {
-                        blacklistentitytpye.add(EntityType.valueOf(str));
-            }
+            blacklist.forEach(str -> blacklistentitytpye.add(EntityType.valueOf(str))
             );
 
             this.blacklist = blacklistentitytpye;

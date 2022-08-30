@@ -7,8 +7,8 @@ bar:
   #{max} = entity's max health
   #{damage} = given damage
   title:
-    living: "<gray>{health}/{max} <reset>{entity} -{damage}<red>♥"
-    dead: "<gray>{health}/{max} <dark_gray>☠ {entity} ☠ <reset>-{damage}<red>♥"
+    living: "<gray><health>/<max> <reset><name> -<damage><red>♥"
+    dead: "<gray><health>/<max> <dark_gray>☠ <name> ☠ <reset>-<damage><red>♥"
   #https://jd.adventure.kyori.net/api/4.11.0/net/kyori/adventure/bossbar/BossBar.Overlay.html
   overlay: PROGRESS
   #https://jd.adventure.kyori.net/api/4.11.0/net/kyori/adventure/bossbar/BossBar.Color.html

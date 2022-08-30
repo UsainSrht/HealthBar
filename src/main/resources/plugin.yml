@@ -4,4 +4,9 @@ main: com.purpurmc.healthbar.Healthbar
 api-version: 1.19
 prefix: HealthBar
 authors: [ UsainSrht ]
-description: Simple mob health bar plugin.
+description: Simple health bar plugin.
+commands:
+  healthbar:
+    description: command for toggling healthbar.
+    usage: /<command>
+    permission: healthbar.command

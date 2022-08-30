@@ -2,8 +2,8 @@ package com.purpurmc.healthbar;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
@@ -17,12 +17,13 @@ import java.text.DecimalFormat;
 public class BossBar {
 
     private static final DecimalFormat df = new DecimalFormat("0.00");
+    private final Healthbar healthbar = Healthbar.instance;
     public void giveBossBar(Player p, Entity entity) {
-        Float progress = (float)(((Damageable) entity).getHealth() / ((Attributable) entity).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+        float progress = (float)(((Damageable) entity).getHealth() / ((Attributable) entity).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
         net.kyori.adventure.bossbar.BossBar bar = getorCreateBossBar(entity).progress(progress);
         p.showBossBar(bar);
-        p.setMetadata("healthbarcooldown" + entity.getUniqueId(), new FixedMetadataValue(Healthbar.instance, System.currentTimeMillis()));
-        Bukkit.getScheduler().runTaskLater(Healthbar.instance, () -> {
+        p.setMetadata("healthbarcooldown" + entity.getUniqueId(), new FixedMetadataValue(healthbar, System.currentTimeMillis()));
+        Bukkit.getScheduler().runTaskLater(healthbar, () -> {
             Long current = System.currentTimeMillis();
             Long cd = p.getMetadata("healthbarcooldown" + entity.getUniqueId()).get(0).asLong();
             if ((current - cd) > 4900) {
@@ -35,18 +36,17 @@ public class BossBar {
     public net.kyori.adventure.bossbar.BossBar getorCreateBossBar(Entity entity) {
 
         if (!entity.hasMetadata("healthbar")) {
-            //ComponentLike componentLike = (ComponentLike) Component.translatable(entity.getType().translationKey());
             ComponentLike componentLike = (ComponentLike) Component.empty();
-            Float progress = 1f;
-            net.kyori.adventure.bossbar.BossBar.Color color = Healthbar.instance.getBarcolor();
-            net.kyori.adventure.bossbar.BossBar.Overlay overlay = Healthbar.instance.getBaroverlay();
+            float progress = 1f;
+            net.kyori.adventure.bossbar.BossBar.Color color = healthbar.getBarcolor();
+            net.kyori.adventure.bossbar.BossBar.Overlay overlay = healthbar.getBaroverlay();
 
             net.kyori.adventure.bossbar.BossBar bossbar = net.kyori.adventure.bossbar.BossBar.bossBar(
                     componentLike,
                     progress,
                     color,
                     overlay);
-            entity.setMetadata("healthbar", new FixedMetadataValue(Healthbar.instance, bossbar));
+            entity.setMetadata("healthbar", new FixedMetadataValue(healthbar, bossbar));
             return bossbar;
         }
         else {
@@ -56,20 +56,34 @@ public class BossBar {
 
     public void updateHealthBar(Entity entity, double damage) {
         net.kyori.adventure.bossbar.BossBar bossbar = (net.kyori.adventure.bossbar.BossBar) entity.getMetadata("healthbar").get(0).value();
-        Component entityname;
-        Double health = ((Damageable) entity).getHealth() - damage;
-        if (health < 0) {
-            entityname = (Component.text("☠").append(Component.translatable(entity.getType().translationKey())).append(Component.text("☠"))).color(NamedTextColor.DARK_GRAY).decorate(TextDecoration.ITALIC);
+        Component parsed;
+        Component translate = Component.translatable(entity.getType().translationKey());
+        double max = ((Attributable) entity).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+        double health = ((Damageable) entity).getHealth();
+        String title;
+        if (health <= 0) {
             health = 0d;
+            title = healthbar.getDeadtitle();
+            parsed = MiniMessage.miniMessage().deserialize(title,
+                    Placeholder.component("entity", translate),
+                    Placeholder.component("name", entity.customName() == null ? translate : entity.customName()),
+                    Placeholder.component("max", Component.text(df.format(max))),
+                    Placeholder.component("health", Component.text(df.format(health))),
+                    Placeholder.component("damage", Component.text(df.format(damage)))
+            );
         }
         else {
-            entityname = Component.translatable(entity.getType().translationKey());
+            title = healthbar.getLivingtitle();
+            parsed = MiniMessage.miniMessage().deserialize(title,
+                    Placeholder.component("entity", translate),
+                    Placeholder.component("name", entity.customName() == null ? translate : entity.customName()),
+                    Placeholder.component("max", Component.text(df.format(max))),
+                    Placeholder.component("health", Component.text(df.format(health))),
+                    Placeholder.component("damage", Component.text(df.format(damage)))
+            );
         }
-        Component space = Component.space();
-        Component damagecomponent = Component.text("-" + df.format(damage) + "♥", NamedTextColor.RED);
-        Component allofem = entityname.append(space.append(damagecomponent));
-        bossbar = bossbar.name(allofem);
-        Float progress = (float)(health / ((Attributable) entity).getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+        bossbar = bossbar.name(parsed);
+        Float progress = (float)(health / max);
         bossbar = bossbar.progress(progress);
     }
 }
