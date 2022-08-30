@@ -1,11 +1,11 @@
 bar:
   #Placeholders:
-  #{entity} = entity's translated name
-  #{name} = entity's name
-  # {name} will show {entity} if the entity doesn't have name.
-  #{health} = entity's health
-  #{max} = entity's max health
-  #{damage} = given damage
+  #<entity> = entity's translated name
+  #<name> = entity's name
+  # <name> will show <entity> if the entity doesn't have name.
+  #<health> = entity's health
+  #<max> = entity's max health
+  #<damage> = given damage
   title:
     living: "<gray><health>/<max> <reset><name> -<damage><red>♥"
     dead: "<gray><health>/<max> <dark_gray>☠ <name> ☠ <reset>-<damage><red>♥"
