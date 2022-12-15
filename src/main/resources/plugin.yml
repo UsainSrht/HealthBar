@@ -5,8 +5,4 @@ api-version: 1.19
 prefix: HealthBar
 authors: [ UsainSrht ]
 description: Simple health bar plugin.
-commands:
-  healthbar:
-    description: command for toggling healthbar.
-    usage: /<command>
-    permission: healthbar.command
+website: purpurmc.com

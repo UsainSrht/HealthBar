@@ -4,32 +4,40 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.List;
 
-class HealthBarCommand implements CommandExecutor {
+public class HealthBarCommand extends Command {
+
+    public NamespacedKey visible = new NamespacedKey(Healthbar.getInstance(), "visible");
+
+    protected HealthBarCommand(@NotNull String name, @NotNull String description, @NotNull String usageMessage, @NotNull List<String> aliases) {
+        super(name, description, usageMessage, aliases);
+    }
+
     @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (args[0] == "toggle") {
+    public boolean execute(@NotNull CommandSender sender, @NotNull String command, String[] args) {
+        if (args[0].equals("toggle")) {
             if (sender instanceof Player) {
                 Player p = (Player) sender;
-                NamespacedKey visible = new NamespacedKey(Healthbar.instance, "visible");
                 if (p.getPersistentDataContainer().has(visible, PersistentDataType.LONG)) {
                     p.getPersistentDataContainer().remove(visible);
-                }
-                else {
+                } else {
                     p.getPersistentDataContainer().set(visible, PersistentDataType.LONG, 1L);
                 }
             }
-        }
-        else if (args[0] == "reload") {
+            else {
+                sender.sendMessage(Component.text("/healthbar toggle command only executable as player!", NamedTextColor.RED));
+            }
+        } else if (args[0].equals("reload")) {
             if (sender.hasPermission("healthbar.reload")) {
                 try {
-                    Healthbar.instance.initializeYAML();
+                    Healthbar.getInstance().initializeYAML();
                     sender.sendMessage(Component.text("plugin reloaded successfully", NamedTextColor.GREEN));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -37,7 +45,6 @@ class HealthBarCommand implements CommandExecutor {
             }
         }
 
-        // If the player (or console) uses our command correct, we can return true
         return true;
     }
 }

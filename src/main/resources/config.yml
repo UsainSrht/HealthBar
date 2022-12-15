@@ -18,3 +18,4 @@ blacklist:
   - ENDER_DRAGON
   - WITHER
   - PLAYER
+  - ARMOR_STAND

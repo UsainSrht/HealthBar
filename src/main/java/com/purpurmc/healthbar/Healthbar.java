@@ -1,11 +1,10 @@
 package com.purpurmc.healthbar;
 
 import net.kyori.adventure.bossbar.BossBar;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,7 +23,12 @@ public final class Healthbar extends JavaPlugin {
     public void onEnable() {
         instance = this;
         getServer().getPluginManager().registerEvents(new DamageEvent(), this);
-        this.getCommand("healthbar").setExecutor(new HealthBarCommand());
+
+        CommandHandler.register(new HealthBarCommand("healthbar",
+                "command to toggle/reload healthbar",
+                "/healthbar (toggle|reload)",
+                new ArrayList<>()));
+
         try {
             initializeYAML();
         } catch (IOException e) {
@@ -34,8 +38,11 @@ public final class Healthbar extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        getLogger().info("Disabling HealthBar...");
-        instance = null;
+
+    }
+
+    public static Healthbar getInstance() {
+        return instance;
     }
 
     public Collection<EntityType> getBlacklistEntities() {
@@ -54,32 +61,25 @@ public final class Healthbar extends JavaPlugin {
     public String getDeadtitle() {return this.deadtitle;}
 
     public void initializeYAML() throws IOException {
-        File config = new File("plugins/HealthBar/config.yml");
-        if (config.exists()) {
-            getLogger().info("Loading congif.yml");
-            YamlConfiguration configyml = YamlConfiguration.loadConfiguration(config);
+        saveDefaultConfig();
+        getLogger().info("Loading config.yml");
+        FileConfiguration configyml = getConfig();
 
-            this.livingtitle = configyml.getString("bar.title.living");
+        this.livingtitle = configyml.getString("bar.title.living");
 
-            this.deadtitle = configyml.getString("bar.title.dead");
+        this.deadtitle = configyml.getString("bar.title.dead");
 
-            String overlay = configyml.getString("bar.overlay");
-            this.baroverlay = BossBar.Overlay.valueOf(overlay);
+        String overlay = configyml.getString("bar.overlay");
+        this.baroverlay = BossBar.Overlay.valueOf(overlay);
 
-            String color = configyml.getString("bar.color");
-            this.barcolor = BossBar.Color.valueOf(color);
+        String color = configyml.getString("bar.color");
+        this.barcolor = BossBar.Color.valueOf(color);
 
-            List<String> blacklist = configyml.getStringList("blacklist");
-            Collection<EntityType> blacklistentitytpye = new ArrayList<>();
-            blacklist.forEach(str -> blacklistentitytpye.add(EntityType.valueOf(str))
-            );
+        List<String> blacklist = configyml.getStringList("blacklist");
+        Collection<EntityType> blacklistentitytpye = new ArrayList<>();
+        blacklist.forEach(str -> blacklistentitytpye.add(EntityType.valueOf(str))
+        );
 
-            this.blacklist = blacklistentitytpye;
-        }
-        else {
-            getLogger().info("Config.yml couldn't found. Creating one...");
-            this.saveDefaultConfig();
-            initializeYAML();
-        }
+        this.blacklist = blacklistentitytpye;
     }
 }
