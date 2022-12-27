@@ -19,3 +19,9 @@ blacklist:
   - WITHER
   - PLAYER
   - ARMOR_STAND
+
+messages:
+  toggle:
+    on: "<green>Healthbar turned on."
+    off: "<red>Healthbar turned off."
+  reload: "<green>config reloaded succesfully."

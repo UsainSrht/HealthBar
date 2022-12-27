@@ -1,25 +1,30 @@
 package com.purpurmc.healthbar;
 
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+
+import static com.purpurmc.healthbar.Healthbar.visible;
 
 public class DamageEvent implements Listener {
 
     private final BossBar bossbar = new BossBar();
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
-        if (event.getDamager().getType() == EntityType.PLAYER) {
-            NamespacedKey visible = new NamespacedKey(Healthbar.instance, "visible");
-            if (!event.getDamager().getPersistentDataContainer().has(visible)) {
+        Entity attacker = event.getDamager();
+        if (event.getDamager() instanceof Projectile) {
+            Projectile projectile = (Projectile) event.getDamager();
+            attacker = (Entity) projectile.getShooter();
+        }
+        if (attacker instanceof Player) {
+            if (!attacker.getPersistentDataContainer().has(visible)) {
                 if (!Healthbar.instance.getBlacklistEntities().contains(event.getEntityType())) {
-                    bossbar.giveBossBar((Player) event.getDamager(), event.getEntity());
+                    bossbar.giveBossBar((Player) attacker, event.getEntity());
                 }
             }
 

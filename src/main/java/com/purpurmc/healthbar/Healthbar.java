@@ -1,6 +1,7 @@
 package com.purpurmc.healthbar;
 
 import net.kyori.adventure.bossbar.BossBar;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -13,6 +14,8 @@ import java.util.List;
 public final class Healthbar extends JavaPlugin {
 
     public static Healthbar instance;
+
+    public static NamespacedKey visible;
     public String livingtitle;
     public String deadtitle;
     public BossBar.Overlay baroverlay;
@@ -22,6 +25,9 @@ public final class Healthbar extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+
+        visible = new NamespacedKey(instance, "visible");
+
         getServer().getPluginManager().registerEvents(new DamageEvent(), this);
 
         CommandHandler.register(new HealthBarCommand("healthbar",

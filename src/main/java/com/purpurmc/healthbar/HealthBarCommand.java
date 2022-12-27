@@ -2,7 +2,7 @@ package com.purpurmc.healthbar;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.NamespacedKey;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -12,9 +12,9 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.List;
 
-public class HealthBarCommand extends Command {
+import static com.purpurmc.healthbar.Healthbar.visible;
 
-    public NamespacedKey visible = new NamespacedKey(Healthbar.getInstance(), "visible");
+public class HealthBarCommand extends Command {
 
     protected HealthBarCommand(@NotNull String name, @NotNull String description, @NotNull String usageMessage, @NotNull List<String> aliases) {
         super(name, description, usageMessage, aliases);
@@ -27,8 +27,10 @@ public class HealthBarCommand extends Command {
                 Player p = (Player) sender;
                 if (p.getPersistentDataContainer().has(visible, PersistentDataType.LONG)) {
                     p.getPersistentDataContainer().remove(visible);
+                    sender.sendMessage(MiniMessage.miniMessage().deserialize(Healthbar.getInstance().getConfig().getString("messages.toggle.true")));
                 } else {
                     p.getPersistentDataContainer().set(visible, PersistentDataType.LONG, 1L);
+                    sender.sendMessage(MiniMessage.miniMessage().deserialize(Healthbar.getInstance().getConfig().getString("messages.toggle.false")));
                 }
             }
             else {
@@ -38,7 +40,7 @@ public class HealthBarCommand extends Command {
             if (sender.hasPermission("healthbar.reload")) {
                 try {
                     Healthbar.getInstance().initializeYAML();
-                    sender.sendMessage(Component.text("plugin reloaded successfully", NamedTextColor.GREEN));
+                    sender.sendMessage(MiniMessage.miniMessage().deserialize(Healthbar.getInstance().getConfig().getString("messages.reload")));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

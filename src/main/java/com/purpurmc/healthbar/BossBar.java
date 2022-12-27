@@ -36,7 +36,7 @@ public class BossBar {
     public net.kyori.adventure.bossbar.BossBar getorCreateBossBar(Entity entity) {
 
         if (!entity.hasMetadata("healthbar")) {
-            ComponentLike componentLike = (ComponentLike) Component.empty();
+            ComponentLike componentLike = Component.empty();
             float progress = 1f;
             net.kyori.adventure.bossbar.BossBar.Color color = healthbar.getBarcolor();
             net.kyori.adventure.bossbar.BossBar.Overlay overlay = healthbar.getBaroverlay();
