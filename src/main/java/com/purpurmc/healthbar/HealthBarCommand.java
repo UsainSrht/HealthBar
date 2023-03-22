@@ -40,6 +40,7 @@ public class HealthBarCommand extends Command {
         } else if (args[0].equals("reload")) {
             if (sender.hasPermission("healthbar.reload")) {
                 try {
+                    Healthbar.getInstance().reloadConfig();
                     Healthbar.getInstance().initializeYAML();
                     sender.sendMessage(MiniMessage.miniMessage().deserialize(Healthbar.getInstance().getConfig().getString("messages.reload")));
                 } catch (IOException e) {
