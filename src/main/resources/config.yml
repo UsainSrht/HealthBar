@@ -13,6 +13,8 @@ bar:
   overlay: PROGRESS
   #https://jd.adventure.kyori.net/api/4.11.0/net/kyori/adventure/bossbar/BossBar.Color.html
   color: RED
+  #in ticks, 20 = 1 second and 100 = 5 seconds.
+  time: 100
 
 blacklist:
   - ENDER_DRAGON

@@ -1,6 +1,7 @@
 package com.purpurmc.healthbar;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -13,9 +14,9 @@ import static com.purpurmc.healthbar.Healthbar.visible;
 
 public class DamageEvent implements Listener {
 
-    private final BossBar bossbar = new BossBar();
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
+        if (!(event.getEntity() instanceof Damageable)) return;
         Entity attacker = event.getDamager();
         if (event.getDamager() instanceof Projectile) {
             Projectile projectile = (Projectile) event.getDamager();
@@ -24,7 +25,7 @@ public class DamageEvent implements Listener {
         if (attacker instanceof Player) {
             if (!attacker.getPersistentDataContainer().has(visible)) {
                 if (!Healthbar.instance.getBlacklistEntities().contains(event.getEntityType())) {
-                    bossbar.giveBossBar((Player) attacker, event.getEntity());
+                    BossBarUtils.giveBossBar((Player) attacker, event.getEntity());
                 }
             }
 
@@ -36,7 +37,7 @@ public class DamageEvent implements Listener {
         Entity entity = event.getEntity();
         Bukkit.getScheduler().runTaskLater(Healthbar.instance, () -> {
             if (entity.hasMetadata("healthbar")) {
-                bossbar.updateHealthBar(entity, event.getFinalDamage());
+                BossBarUtils.updateHealthBar(entity, event.getFinalDamage());
             }
         }, 1L);
     }

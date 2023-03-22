@@ -22,6 +22,7 @@ public class HealthBarCommand extends Command {
 
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String command, String[] args) {
+        if (args.length == 0) return true;
         if (args[0].equals("toggle")) {
             if (sender instanceof Player) {
                 Player p = (Player) sender;

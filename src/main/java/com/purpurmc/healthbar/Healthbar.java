@@ -14,14 +14,13 @@ import java.util.List;
 public final class Healthbar extends JavaPlugin {
 
     public static Healthbar instance;
-
     public static NamespacedKey visible;
-    public String livingtitle;
-    public String deadtitle;
-    public BossBar.Overlay baroverlay;
-    public BossBar.Color barcolor;
-    public Collection<EntityType> blacklist;
-
+    public static String livingtitle;
+    public static String deadtitle;
+    public static BossBar.Overlay baroverlay;
+    public static BossBar.Color barcolor;
+    public static int bartime;
+    public static Collection<EntityType> blacklist;
     @Override
     public void onEnable() {
         instance = this;
@@ -34,58 +33,56 @@ public final class Healthbar extends JavaPlugin {
                 "command to toggle/reload healthbar",
                 "/healthbar (toggle|reload)",
                 new ArrayList<>()));
-
         try {
             initializeYAML();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-
     @Override
     public void onDisable() {
 
     }
-
     public static Healthbar getInstance() {
         return instance;
     }
-
     public Collection<EntityType> getBlacklistEntities() {
-        return this.blacklist;
+        return blacklist;
     }
-
     public BossBar.Overlay getBaroverlay() {
-        return this.baroverlay;
+        return baroverlay;
     }
-
     public BossBar.Color getBarcolor() {
-        return this.barcolor;
+        return barcolor;
     }
-
-    public String getLivingtitle() {return this.livingtitle;}
-    public String getDeadtitle() {return this.deadtitle;}
-
+    public String getLivingtitle() {
+        return livingtitle;
+    }
+    public String getDeadtitle() {
+        return deadtitle;
+    }
     public void initializeYAML() throws IOException {
         saveDefaultConfig();
         getLogger().info("Loading config.yml");
         FileConfiguration configyml = getConfig();
 
-        this.livingtitle = configyml.getString("bar.title.living");
+        livingtitle = configyml.getString("bar.title.living");
 
-        this.deadtitle = configyml.getString("bar.title.dead");
+        deadtitle = configyml.getString("bar.title.dead");
 
         String overlay = configyml.getString("bar.overlay");
-        this.baroverlay = BossBar.Overlay.valueOf(overlay);
+        baroverlay = BossBar.Overlay.valueOf(overlay);
 
         String color = configyml.getString("bar.color");
-        this.barcolor = BossBar.Color.valueOf(color);
+        barcolor = BossBar.Color.valueOf(color);
 
-        List<String> blacklist = configyml.getStringList("blacklist");
+        List<String> Lblacklist = configyml.getStringList("blacklist");
         Collection<EntityType> blacklistentitytpye = new ArrayList<>();
-        blacklist.forEach(str -> blacklistentitytpye.add(EntityType.valueOf(str))
+        Lblacklist.forEach(str -> blacklistentitytpye.add(EntityType.valueOf(str))
         );
 
-        this.blacklist = blacklistentitytpye;
+        blacklist = blacklistentitytpye;
+
+        bartime = configyml.getInt("bar.time");
     }
 }
