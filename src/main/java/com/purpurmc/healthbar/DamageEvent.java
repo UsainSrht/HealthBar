@@ -14,13 +14,15 @@ import static com.purpurmc.healthbar.Healthbar.visible;
 
 public class DamageEvent implements Listener {
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onDamage(EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof Damageable)) return;
         Entity attacker = event.getDamager();
         if (event.getDamager() instanceof Projectile) {
             Projectile projectile = (Projectile) event.getDamager();
-            attacker = (Entity) projectile.getShooter();
+            if (projectile.getShooter() instanceof Player) {
+                attacker = (Entity) projectile.getShooter();
+            }
         }
         if (attacker instanceof Player) {
             if (!attacker.getPersistentDataContainer().has(visible)) {
@@ -32,7 +34,7 @@ public class DamageEvent implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onDamage(EntityDamageEvent event) {
         Entity entity = event.getEntity();
         Bukkit.getScheduler().runTaskLater(Healthbar.instance, () -> {

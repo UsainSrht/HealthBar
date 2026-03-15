@@ -66,14 +66,14 @@ public final class Healthbar extends JavaPlugin {
         getLogger().info("Loading config.yml");
         FileConfiguration configyml = getConfig();
 
-        livingtitle = configyml.getString("bar.title.living");
+        livingtitle = configyml.getString("bar.title.living", "<gray><health>/<max> <reset><name> -<damage><red>♥");
 
-        deadtitle = configyml.getString("bar.title.dead");
+        deadtitle = configyml.getString("bar.title.dead", "<gray><health>/<max> <dark_gray>☠ <name> ☠ <reset>-<damage><red>♥");
 
-        String overlay = configyml.getString("bar.overlay");
+        String overlay = configyml.getString("bar.overlay", "PROGRESS");
         baroverlay = BossBar.Overlay.valueOf(overlay);
 
-        String color = configyml.getString("bar.color");
+        String color = configyml.getString("bar.color", "RED");
         barcolor = BossBar.Color.valueOf(color);
 
         List<String> Lblacklist = configyml.getStringList("blacklist");
@@ -83,6 +83,6 @@ public final class Healthbar extends JavaPlugin {
 
         blacklist = blacklistentitytpye;
 
-        bartime = configyml.getInt("bar.time");
+        bartime = configyml.getInt("bar.time", 100);
     }
 }

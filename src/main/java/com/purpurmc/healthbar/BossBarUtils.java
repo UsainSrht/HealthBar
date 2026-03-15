@@ -59,6 +59,7 @@ public class BossBarUtils {
 
     public static void updateHealthBar(Entity entity, double damage) {
         BossBar bossbar = (BossBar) entity.getMetadata("healthbar").get(0).value();
+        if (bossbar == null) return;
         Component parsed;
         Component translate = Component.translatable(entity.getType().translationKey());
         Damageable damageable = (Damageable) entity;

@@ -1,8 +1,8 @@
 name: Healthbar
 version: '${project.version}'
 main: com.purpurmc.healthbar.Healthbar
-api-version: 1.19
+api-version: 1.18
 prefix: HealthBar
 authors: [ UsainSrht ]
 description: Simple health bar plugin.
-website: purpurmc.com
+website: usainsrht.com
