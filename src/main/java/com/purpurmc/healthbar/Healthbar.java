@@ -5,6 +5,8 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.java.JavaPlugin;
+import space.arim.morepaperlib.MorePaperLib;
+import space.arim.morepaperlib.scheduling.GracefulScheduling;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,9 +23,15 @@ public final class Healthbar extends JavaPlugin {
     public static BossBar.Color barcolor;
     public static int bartime;
     public static Collection<EntityType> blacklist;
+
+    private MorePaperLib morePaperLib;
+    private GracefulScheduling scheduling;
+
     @Override
     public void onEnable() {
         instance = this;
+        morePaperLib = new MorePaperLib(this);
+        scheduling = morePaperLib.scheduling();
 
         visible = new NamespacedKey(instance, "visible");
 
@@ -38,29 +46,46 @@ public final class Healthbar extends JavaPlugin {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        getLogger().info("Using Folia scheduling: " + scheduling.isUsingFolia());
     }
+
     @Override
     public void onDisable() {
-
+        BossBarUtils.cancelAllHideTasks();
+        if (scheduling != null) {
+            scheduling.cancelGlobalTasks();
+        }
     }
+
     public static Healthbar getInstance() {
         return instance;
     }
+
+    public GracefulScheduling getScheduling() {
+        return scheduling;
+    }
+
     public Collection<EntityType> getBlacklistEntities() {
         return blacklist;
     }
+
     public BossBar.Overlay getBaroverlay() {
         return baroverlay;
     }
+
     public BossBar.Color getBarcolor() {
         return barcolor;
     }
+
     public String getLivingtitle() {
         return livingtitle;
     }
+
     public String getDeadtitle() {
         return deadtitle;
     }
+
     public void initializeYAML() throws IOException {
         saveDefaultConfig();
         getLogger().info("Loading config.yml");

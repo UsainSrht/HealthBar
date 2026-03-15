@@ -2,6 +2,7 @@ name: Healthbar
 version: '${project.version}'
 main: com.purpurmc.healthbar.Healthbar
 api-version: 1.18
+folia-supported: true
 prefix: HealthBar
 authors: [ UsainSrht ]
 description: Simple health bar plugin.
